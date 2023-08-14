@@ -763,6 +763,7 @@ banner
 
 .Modern-Slider .NextArrow:hover {
     opacity: 1;
+    cursor: pointer;
 }
 
 .Modern-Slider .NextArrow:before{
@@ -792,6 +793,7 @@ banner
 
 .Modern-Slider .PrevArrow:hover {
     opacity: 1;
+    cursor: pointer;
 }
 
 .Modern-Slider .PrevArrow:before{
@@ -1013,7 +1015,9 @@ reservation
     border-color: #fb5849;
 }
 
-.contact-form button {
+
+
+.contact-form button, .btnMain {
     margin-top: -10px;
     font-size: 13px;
     color: #fff;
@@ -1028,8 +1032,9 @@ reservation
     transition: all .3s;
 }
 
-.contact-form button:hover {
+.contact-form button:hover, .btnMain:hover{
     opacity: .9;
+    cursor: pointer;
 }
 
 .contact-form textarea {

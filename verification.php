@@ -1,11 +1,17 @@
 <?php
-session_start();
-if (!isset($_SESSION['signup'])) {
+require "template/header.php";
+
+if (!isset($_SESSION['signup']) || !$_SESSION['signup']) {
     header("Location: signup.php");
     exit();
 }
+if($_SESSION['verified']){
+    unset($_SESSION['verified']);
+    header("Location: index.php");
+    exit();
+}
 
-require_once 'db_config.php';
+require 'db_config.php';
 
 $fname = $_SESSION['fname'];
 $lname = $_SESSION['lname'];
@@ -13,48 +19,56 @@ $email = $_SESSION['email'];
 $gender = $_SESSION['gender'];
 $date = $_SESSION['date'];
 $phone = $_SESSION['phone'];
-$verificationCode = $_SESSION['verificationCode'];
-$expiryTime = $_SESSION['expiryTime'];
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-$password = $_POST['password'];
-$confirmPassword = $_POST['confirm_password'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $password = $_POST['password'];
+    $confirmPassword = $_POST['confirm_password'];
 
-// Check if the password and confirm password match
-if ($password !== $confirmPassword) {
-    echo "Password and confirm password do not match!";
-} else {
-    try {
-        $pdo = connect();
+    if ($password !== $confirmPassword) {
+        echo "Password and confirm password do not match!";
+    } else {
+        try {
+            $pdo = connect();
 
-        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-        $sql = "INSERT INTO accounts (first_name, last_name, email, gender, date_of_birth, phone, password, verification_code, verification_expiry) VALUES (:fname, :lname, :email, :gender, :date, :phone, :password, :verificationCode, :expiryTime)";
-        $stmt = $pdo->prepare($sql);
+            // SQL statment
+            $stmt = $pdo->prepare("INSERT INTO accounts (first_name, last_name, email, gender, date_of_birth, phone, password, created_at) 
+                VALUES (:fname, :lname, :email, :gender, :date_of_birth, :phone, :password, :created_at)");
+            $stmt->bindParam(':fname', $fname);
+            $stmt->bindParam(':lname', $lname);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':gender', $gender);
+            $stmt->bindParam(':date_of_birth', $date);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':password', $hashedPassword);
+            $stmt->bindValue(':created_at', date('Y-m-d H:i:s'));
 
-        // Bind parameters and execute the statement
-        $stmt->bindParam(':fname', $fname);
-        $stmt->bindParam(':lname', $lname);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':gender', $gender);
-        $stmt->bindParam(':date', $date);
-        $stmt->bindParam(':phone', $phone);
-        $stmt->bindParam(':password', $hashedPassword);
-        $stmt->bindParam(':verificationCode', $verificationCode);
-        $stmt->bindParam('expiryTime', $expiryTime);
-        $stmt->execute();
+?>
+<section class="mt-5 p-5">
+    <div class="contact-form">
+        <?php
+            if ($stmt->execute()) {
+                unset($_SESSION['signup']);
+                unset($_SESSION['fname']);
+                unset($_SESSION['lname']);
+                unset($_SESSION['email']);
+                unset($_SESSION['gender']);
+                unset($_SESSION['date']);
+                unset($_SESSION['phone']);
 
-        echo "Account created successfully!";
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+                $_SESSION['verified'] = true;
+                echo "Account created successfully!";
+            } else {
+                echo "Error: Unable to insert data into the database.";
+            }
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 }
-}
-include "template/header.php";
-?>
-<section class="p-5">
-    <div class="contact-form p-3">
-        <form id="contact" action="profile.php" method="post">
+        ?>
+        <form id="contact" action="" method="post" class="contact-form">
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-12">
                     <h4>Sign up</h4>

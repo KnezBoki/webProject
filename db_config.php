@@ -17,4 +17,4 @@ function connect($flag = true) {
         die("Connection failed: " . $e->getMessage());
     }
 }
-?>
+

@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+$userRole = "";
+
+if (isset($_SESSION['logged_in'])){
+    $userRole = $_SESSION['userRole'];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,6 +40,10 @@
 
     <link rel="stylesheet" href="assets/css/lightbox.css">
 
+    <link href="assets/datepicker/dist/css/datepicker.min.css" rel="stylesheet" />
+
+    <link href="assets/datepicker/dist/css/datepicker-bs4.min.css" rel="stylesheet" />
+
 </head>
 <body>
 <!-- ***** Preloader Start ***** -->
@@ -58,7 +71,27 @@
                         <li class="scroll-to-section"><a href="index.php">Home</a></li>
                         <li class="scroll-to-section"><a href="about.php">About</a></li>
                         <li class="scroll-to-section"><a href="contact.php">Contact Us</a></li>
-                        <li class="scroll-to-section"><a href="login.php">Log in</a></li>
+                        <?php
+                        //Menu item based on role
+                        if ($userRole == 'admin') {
+                            echo '<li class="scroll-to-section"><a href="admin.php">Admin panel</a></li>';
+                        } elseif ($userRole == 'worker') {
+                            echo '<li class="scroll-to-section"><a href="tables.php">Tables</a></li>';
+                        } elseif($userRole == 'user') {
+                            echo '<li class="scroll-to-section"><a href="profile.php">Profile</a></li>';
+                            echo '<li class="scroll-to-section"><a href="reservation.php">Reservation</a></li>';
+                        }
+                        else{
+                            echo '<li class="scroll-to-section"><a href="signup.php">Sign up</a></li>';
+                        }
+
+                        // login/logout
+                        if ($userRole == 'admin' || $userRole == 'worker' || $userRole == 'user') {
+                            echo '<li class="scroll-to-section"><a href="logout.php">Log out</a></li>';
+                        } else {
+                            echo '<li class="scroll-to-section"><a href="login.php">Log in</a></li>';
+                        }
+                        ?>
                     </ul>
                     <a class='menu-trigger'>
                         <span>Menu</span>

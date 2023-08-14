@@ -1,5 +1,4 @@
 <?php
-require "auth.php";
 require "template/header.php";
 ?>
 
@@ -13,7 +12,7 @@ require "template/header.php";
                         <h1 class="text-lg-left">MIL Food</h1>
                         <h6 class="text-md-left">THE BEST EXPERIENCE</h6>
                         <div class="main-white-button scroll-to-section justify-content-center">
-                            <a href="signup.php">Make A Reservation</a>
+                            <a href="reservation.php">Make A Reservation</a>
                         </div>
                     </div>
                 </div>

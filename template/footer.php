@@ -34,7 +34,8 @@
 <!-- Plugins -->
 <script src="assets/js/owl-carousel.js"></script>
 <script src="assets/js/accordions.js"></script>
-<script src="assets/js/datepicker.js"></script>
+<script src="assets/datepicker/dist/js/datepicker.min.js"></script>
+<script src="assets/datepicker/dist/js/locales/en-GB.js"></script>
 <script src="assets/js/scrollreveal.min.js"></script>
 <script src="assets/js/waypoints.min.js"></script>
 <script src="assets/js/jquery.counterup.min.js"></script>

@@ -14,8 +14,7 @@
 	  }
 	});
 	
-	$('.input-group.date').datepicker({format: "dd.mm.yyyy"});
-	
+
 
 	$('.filters ul li').click(function(){
 	  $('.filters ul li').removeClass('active');
@@ -124,8 +123,8 @@
 				var width = $(window).width();
 				if(width < 991) {
 					$('.menu-trigger').removeClass('active');
-					$('.header-area .nav').slideUp(200);	
-				}				
+					$('.header-area .nav').slideUp(200);
+				}
 				$('html,body').animate({
 					scrollTop: (target.offset().top) - 80
 				}, 700);
@@ -133,11 +132,13 @@
 			}
 		}
 	});
+/*
 
+// Smooth scroll (doesn't work sometime idk whats wrong fix before deadline!)
 	$(document).ready(function () {
 	    $(document).on("scroll", onScroll);
 	    
-	    // Smooth scroll (doesn't work sometime idk whats wrong fix before deadline!)
+
 	    $('.scroll-to-section a[href^="#"]').on('click', function (e) {
 			e.preventDefault();
 			$(document).off("scroll");
@@ -174,7 +175,7 @@
 	        }
 	    });
 	}
-
+*/
 
 	// Page loading animation
 	$(window).on('load', function() {
@@ -211,6 +212,4 @@
 			}
 		});
 	}
-
-
 })(window.jQuery);
