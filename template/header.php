@@ -18,6 +18,8 @@ if (isset($_SESSION['logged_in'])){
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightbox2/dist/css/lightbox.min.css">
+
     <title>Man I Love Food - Web Site</title>
 
     <!-- Jquerry Scripts -->
@@ -30,13 +32,13 @@ if (isset($_SESSION['logged_in'])){
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
 
     <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css">
 
     <link rel="stylesheet" href="assets/css/style.css">
 
-    <link rel="stylesheet" href="assets/css/owl-carousel.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" href="assets/css/lightbox.css">
 
@@ -76,7 +78,7 @@ if (isset($_SESSION['logged_in'])){
                         if ($userRole == 'admin') {
                             echo '<li class="scroll-to-section"><a href="admin.php">Admin panel</a></li>';
                         } elseif ($userRole == 'worker') {
-                            echo '<li class="scroll-to-section"><a href="tables.php">Tables</a></li>';
+                            echo '<li class="scroll-to-section"><a href="tables.php">Dashboard</a></li>';
                         } elseif($userRole == 'user') {
                             echo '<li class="scroll-to-section"><a href="profile.php">Profile</a></li>';
                             echo '<li class="scroll-to-section"><a href="reservation.php">Reservation</a></li>';

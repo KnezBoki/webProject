@@ -26,7 +26,7 @@
             <div class="col-lg-6 col-md-6 col-xs-12">
                 <div class="right-content">
                     <div class="thumb">
-                        <a rel="nofollow" href="http://youtube.com"><i class="fa fa-play"></i></a>
+                        <a rel="nofollow" href="https://youtube.com"><i class="fa fa-play"></i></a>
                         <img src="assets/images/about-video-bg.jpg" alt="">
                     </div>
                 </div>

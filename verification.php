@@ -1,12 +1,12 @@
 <?php
 require "template/header.php";
 
+$errorMessage = '';
 if (!isset($_SESSION['signup']) || !$_SESSION['signup']) {
     header("Location: signup.php");
     exit();
 }
 if($_SESSION['verified']){
-    unset($_SESSION['verified']);
     header("Location: index.php");
     exit();
 }
@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Password and confirm password do not match!";
     } else {
         try {
-            $pdo = connect();
+            $conn = connect();
 
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
             // SQL statment
-            $stmt = $pdo->prepare("INSERT INTO accounts (first_name, last_name, email, gender, date_of_birth, phone, password, created_at) 
+            $stmt = $conn->prepare("INSERT INTO accounts (first_name, last_name, email, gender, date_of_birth, phone, password, created_at) 
                 VALUES (:fname, :lname, :email, :gender, :date_of_birth, :phone, :password, :created_at)");
             $stmt->bindParam(':fname', $fname);
             $stmt->bindParam(':lname', $lname);
@@ -44,10 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':password', $hashedPassword);
             $stmt->bindValue(':created_at', date('Y-m-d H:i:s'));
 
-?>
-<section class="mt-5 p-5">
-    <div class="contact-form">
-        <?php
             if ($stmt->execute()) {
                 unset($_SESSION['signup']);
                 unset($_SESSION['fname']);
@@ -58,40 +54,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($_SESSION['phone']);
 
                 $_SESSION['verified'] = true;
-                echo "Account created successfully!";
             } else {
-                echo "Error: Unable to insert data into the database.";
+                return false;
             }
         } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+            $errorMessage = "Error: " . $e->getMessage();
         }
     }
 }
         ?>
-        <form id="contact" action="" method="post" class="contact-form">
-            <div class="row d-flex justify-content-center">
+    <section class="mt-sm-5 p-sm-5">
+        <div class="contact-form">
+            <p><?php echo $errorMessage?></p>
+        <form id="contact" method="post" class="contact-form">
+            <div class="row">
                 <div class="col-lg-12">
-                    <h4>Sign up</h4>
+                    <h4>Acount verification</h4>
                 </div>
-                <div class="col-lg-6 mr-1">
-                    <fieldset>
-                        <input name="password" type="password" id="password" placeholder="Password" required="">
-                    </fieldset>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-sm-6 mb-2">
+                        <fieldset>
+                            <input name="password" type="password" id="password" placeholder="Password" required="" onchange="checkPasswordStrength(this)">
+                        </fieldset>
+                    </div>
                 </div>
-                <div class="col-lg-6 mr-1">
-                    <fieldset>
-                        <input name="confirm_password" type="password" id="confirm_password" placeholder="Confirm Password" required="">
-                    </fieldset>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6 mb-2">
+                        <fieldset>
+                            <input name="confirm_password" type="password" id="confirm_password" placeholder="Confirm Password" required="">
+                        </fieldset>
+                    </div>
                 </div>
-                <div class="col-lg-12">
-                </div>
-                <div class="col-lg-6">
-                    <fieldset>
-                        <button type="submit" id="verify-account" class="main-button-icon">Verify account</button>
-                    </fieldset>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-6">
+                        <fieldset>
+                            <button type="submit" id="verify-account" class="btnMain">Verify account!</button>
+                        </fieldset>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
 </section>
+    <script src="assets/js/complexity_check.js"></script>
 <?php include "template/footer.php"; ?>

@@ -1,20 +1,20 @@
 /* ---------------------------------------------
-Table of contents
+table of contents
 ------------------------------------------------
 01. font & reset css
 02. reset
 03. global styles
-04. header
+04. header & dashboards
 05. banner
-06. features
-07. testimonials
-08. contact
+06. about
+07. reservation
+08. offers
 09. footer
 10. preloader
 ---------------------------------------------
 */
 
-/* Font */
+/* font */
 @import url("https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900");
 /*
 ---------------------------------------------
@@ -81,12 +81,12 @@ a {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    margin-top: 0px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 ul {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 p {
@@ -122,7 +122,7 @@ body {
     }
     .mobile-top-fix {
         margin-top: 30px;
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
     .mobile-bottom-fix {
         margin-bottom: 30px;
@@ -186,11 +186,44 @@ body {
     font-weight: 900;
     color: #2a2a2a;
 }
+/*
+---------------------------------------------
+miscellaneous styles
+---------------------------------------------
+*/
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Change this value */
+}
+
+.hidden {
+    display: none;
+}
+
+/* Red color and glow for weak password */
+.password-weak {
+    border-color: red;
+    box-shadow: 0 0 30px red;
+}
+
+/* Green color and glow for strong password */
+.password-strong {
+    border-color: green;
+    box-shadow: 0 0 30px green;
+}
 
 
 /*
 ---------------------------------------------
-header
+header & dashboard
 ---------------------------------------------
 */
 
@@ -198,10 +231,10 @@ header
     background-color: #fff;
     height: 80px!important;
     position: fixed!important;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.15)!important;
+    top: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15)!important;
 }
 
 .background-header .logo,
@@ -220,9 +253,9 @@ header
 .header-area {
     background-color: #fff;
     position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
     height: 100px;
     -webkit-transition: all .5s ease 0s;
@@ -261,7 +294,7 @@ header
 .header-area .main-nav .nav {
     float: right;
     margin-top: 30px;
-    margin-right: 0px;
+    margin-right: 0;
     background-color: transparent;
     -webkit-transition: all 0.3s ease 0s;
     -moz-transition: all 0.3s ease 0s;
@@ -277,7 +310,7 @@ header
 }
 
 .header-area .main-nav .nav li:last-child {
-    padding-right: 0px;
+    padding-right: 0;
 }
 
 .header-area .main-nav .nav li a {
@@ -344,9 +377,9 @@ header
 }
 
 .header-area .main-nav .nav li.submenu ul li {
-    margin-left: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .header-area .main-nav .nav li.submenu ul li a {
@@ -536,13 +569,13 @@ header
     }
     .header-area {
         background-color: #f7f7f7;
-        padding: 0px 15px;
+        padding: 0 15px;
         height: 100px;
         box-shadow: none;
         text-align: center;
     }
     .header-area .container {
-        padding: 0px;
+        padding: 0;
     }
     .header-area .logo {
         margin-left: 30px;
@@ -561,7 +594,7 @@ header
         -moz-transition: all 0s ease 0s;
         -o-transition: all 0s ease 0s;
         transition: all 0s ease 0s;
-        margin-left: 0px;
+        margin-left: 0;
     }
     .header-area .main-nav .nav li:first-child {
         border-top: 1px solid #eee;
@@ -573,13 +606,13 @@ header
         width: 100%;
         background: #fff;
         border-bottom: 1px solid #eee;
-        padding-left: 0px !important;
-        padding-right: 0px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
     .header-area .main-nav .nav li a {
         height: 50px !important;
         line-height: 50px !important;
-        padding: 0px !important;
+        padding: 0 !important;
         border: none !important;
         background: #f7f7f7 !important;
         color: #191a20 !important;
@@ -595,17 +628,17 @@ header
         z-index: 1;
         transform: translateY(0%);
         transition-delay: 0s, 0s, 0.3s;
-        top: 0px;
+        top: 0;
         width: 100%;
         box-shadow: none;
-        height: 0px;
+        height: 0;
     }
     .header-area .main-nav .nav li.submenu ul li a {
         font-size: 12px;
         font-weight: 400;
     }
     .header-area .main-nav .nav li.submenu ul li a:hover:before {
-        width: 0px;
+        width: 0;
     }
     .header-area .main-nav .nav li.submenu ul.active {
         height: auto !important;
@@ -617,7 +650,7 @@ header
         top: 15px;
     }
     .header-area .main-nav .nav li.submenu:hover ul, .header-area .main-nav .nav li.submenu:focus ul {
-        height: 0px;
+        height: 0;
     }
 }
 
@@ -626,8 +659,20 @@ header
         display: flex !important;
     }
 }
+.main-nav .nav li{
+    padding: 6px 0 6px 0;
+}
 
+.main-nav .nav li a {
+    color: #2a2a2a;
+    font-weight: 600;
+    cursor: pointer;
+}
 
+.main-nav .nav li:hover a,
+.main-nav .nav li a.active {
+    color: #fb5849!important;
+}
 /*
 ---------------------------------------------
 banner
@@ -640,7 +685,7 @@ banner
 
 #top .col-lg-4,
 #top .col-lg-8 {
-    padding: 0px;
+    padding: 0;
 }
 
 #top .left-content {
@@ -838,7 +883,7 @@ about
 
 #about {
     margin-top: 20px;
-    padding: 100px 0px 0px 0px;
+    padding: 100px 0 0 0;
     position: relative;
     z-index: 9;
 }
@@ -914,7 +959,7 @@ reservation
 
 #reservation {
     margin-top: 120px;
-    padding: 120px 0px;
+    padding: 120px 0;
     background-image: url(../images/reservation-bg.jpg);
     background-position: center center;
     background-repeat: no-repeat;
@@ -926,7 +971,7 @@ reservation
     background-color: #fff;
     border-radius: 5px;
     text-align: center;
-    padding: 0px 0px 20px 0px;
+    padding: 0 0 20px 0;
 }
 
 #reservation .phone i,
@@ -981,10 +1026,6 @@ reservation
     margin-bottom: 30px;
 }
 
-.datepicker-days {
-    padding: 30px;
-    cursor: pointer;
-}
 .login-bg{
     background-color: dimgray;
 }
@@ -1070,7 +1111,7 @@ offers
 }
 
 #offers .section-heading h6 {
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 #offers .section-heading h6:before {
@@ -1090,13 +1131,13 @@ offers
 }
 #offers #tabs ul li {
     display: inline-block;
-    margin: 0px 15px;
+    margin: 0 15px;
 }
 #offers #tabs ul li:last-child {
-    margin-right: 0px;
+    margin-right: 0;
 }
 #offers #tabs ul li:first-child {
-    margin-left: 0px;
+    margin-left: 0;
 }
 #offers #tabs ul li a {
     text-transform: capitalize;
@@ -1183,7 +1224,7 @@ footer
 
 footer {
     margin-top: 60px;
-    padding: 50px 0px;
+    padding: 50px 0;
     background-color: #fb5849;
 }
 
@@ -1216,7 +1257,7 @@ footer .right-text-content ul li {
     margin-left: 15px;
 }
 footer .right-text-content ul li:first-child {
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 
@@ -1263,14 +1304,14 @@ responsive
     }
     .header-area .main-nav .nav li a {
         font-size: 14px;
-        letter-spacing: 0px;
+        letter-spacing: 0;
     }
     #top .left-content {
         text-align: center;
-        padding: 25% 0px;
+        padding: 25% 0;
     }
     #about .right-content {
-        margin-left: 0px;
+        margin-left: 0;
         margin-top: 30px;
     }
     #chefs .chef-item {
@@ -1280,15 +1321,15 @@ responsive
         margin-bottom: 60px;
     }
     #contact {
-        margin-left: 0px;
+        margin-left: 0;
         margin-top: 30px;
     }
     #offers .tabs-content .left-list {
-        margin-right: 0px;
+        margin-right: 0;
     }
 
     #offers .tabs-content .right-list {
-        margin-left: 0px;
+        margin-left: 0;
     }
     footer .right-text-content {
         text-align: center;

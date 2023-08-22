@@ -40,7 +40,7 @@ if ($_SESSION['logged_in']) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+    $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
 
     $_SESSION['email'] = $email;
     $userRole = getUserRoleFromDB($email, $password);
@@ -57,35 +57,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<section class="login-bg pt-5">
+<section class="login-bg mb-pt-5">
     <div class="container my-5 py-5">
         <form id="contact" class="contact-form" action="" method="post">
-            <div class="row d-flex justify-content-center">
-                <div class="col-lg-12">
+            <div class="row d-flex flex-column align-items-center">
+                <div class="col-lg-12 mb-3">
                     <h4>Login</h4>
                 </div>
-                <div class="col-lg-6 mr-1">
+                <div class="col-lg-6 mb-3">
                     <fieldset>
                         <input name="email" type="text" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your Email Address" required="">
                     </fieldset>
                 </div>
-                <div class="col-lg-6 mr-1">
+                <div class="col-lg-6 mb-3">
                     <fieldset>
                         <input name="password" type="password" id="password" placeholder="Password" required="">
                     </fieldset>
                 </div>
-                <div class="col-lg-6 mr-1 mb-4">
+                <div class="col-lg-12 mb-3 text-md-center">
                     <fieldset>
-                        <a href="signup.php" class="text-md-center"><h6>Don't have an account? Click here!</h6></a>
+                        <a href="signup.php"><h6>Don't have an account? Click here!</h6></a>
                     </fieldset>
                 </div>
-                <div class="col-lg-6 mr-1">
+                <div class="col-lg-6">
                     <fieldset>
                         <button type="submit" id="login" class="main-button-icon">Login</button>
                     </fieldset>
                 </div>
             </div>
-
             <?php if (isset($error_message)) {
                 echo '<div class="bg-light"><p class="text-center mt-3 text-danger">'.$error_message.'</p></div>';
             }

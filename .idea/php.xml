@@ -62,7 +62,7 @@
       <path value="$PROJECT_DIR$/PHPMailer-6.8.0/vendor/php-parallel-lint/php-parallel-lint" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="5.5.0" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
   <component name="PhpStanOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
