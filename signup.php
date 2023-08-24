@@ -13,18 +13,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 require_once "db_config.php";
 require_once "PHPMailer-6.8.0/vendor/autoload.php";
 
-// Function to generate a random verification code
-function generateVerificationCode($length = 10): string
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $code = '';
-    for ($i = 0; $i < $length; $i++) {
-        $code .= $characters[rand(0, strlen($characters) - 1)];
-    }
-    return $code;
-}
-
-// Function to generate a verification link
+//Function to generate a verification link
 function generateVerificationLink($email, $verificationCode): string
 {
     return "https://localhost:63342/WebProject/verification.php?email=" . urlencode($email) . "&code=" . urlencode($verificationCode);
@@ -57,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['verificationCode'] = $verificationCode;
 
-        //UPDATE EMAIL FOR SERVER!
+        //UPDATE EMAIL FOR SERVER! on reservation.php as well
 
         // PHPMailer settings
         $mail = new PHPMailer();

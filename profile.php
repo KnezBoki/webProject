@@ -182,7 +182,7 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                 <h2 class="text-success">Live Reservations</h2>
             </div>
             <?php
-            $stmt = $conn->prepare("SELECT reservation_id, status, reservation_date, reservation_time FROM reservations WHERE account_id = $id");
+            $stmt = $conn->prepare("SELECT * FROM reservations WHERE account_id = $id");
             $stmt->execute();
 
             $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -192,6 +192,15 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                 $status = $reservation['status'];
                 $reservationDate = $reservation['reservation_date'];
                 $reservationTime = $reservation['reservation_time'];
+                $reservationEnd = $reservation['reservation_end'];
+                $tableId = $reservation['table_id'];
+
+                $stmt = $conn->prepare("SELECT location, smoking FROM tables WHERE table_id =?");
+                $stmt->execute([$tableId]);
+                $result = $stmt->fetch();
+
+                $location = $result['location'];
+                $smoking = ($result['smoking']) ? 'Allowed' : 'Not allowed';
 
                 $currentDateTime = new DateTime();
                 $reservationDateTime = new DateTime($reservationDate . ' ' . getReservationTime($reservationTime));
@@ -221,10 +230,34 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                                     </div>
                                     <div class="row mb-1">
                                         <div class="col-md-4 text-sm-start">
-                                            <label class="font-weight-bold">Time:</label>
+                                            <label class="font-weight-bold">Start:</label>
                                         </div>
                                         <div class="col-md-8 text-md-start">
                                             <h4>' . $reservationTime . '</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 text-sm-start">
+                                            <label class="font-weight-bold">End:</label>
+                                        </div>
+                                        <div class="col-md-8 text-md-start">
+                                            <h4>' . $reservationEnd . '</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 text-sm-start">
+                                            <label class="font-weight-bold">Location:</label>
+                                        </div>
+                                        <div class="col-md-8 text-md-start">
+                                            <h4>' . $location . '</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 text-sm-start">
+                                            <label class="font-weight-bold">Smoking:</label>
+                                        </div>
+                                        <div class="col-md-8 text-md-start">
+                                            <h4>' . $smoking . '</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -233,14 +266,13 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                 }
             }
             ?>
-
         </div>
         <div class="row d-flex justify-content-center p-5">
             <div class="col-lg-12 text-center mb-4">
                 <h2>Reservations</h2>
             </div>
             <?php
-            $stmt = $conn->prepare("SELECT reservation_id, status, reservation_date, reservation_time FROM reservations WHERE account_id = $id");
+            $stmt = $conn->prepare("SELECT * FROM reservations WHERE account_id = $id");
             $stmt->execute();
 
             $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -250,6 +282,16 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                 $status = $reservation['status'];
                 $reservationDate = $reservation['reservation_date'];
                 $reservationTime = $reservation['reservation_time'];
+                $reservationEnd = $reservation['reservation_end'];
+                $tableId = $reservation['table_id'];
+
+                $stmt = $conn->prepare("SELECT location, smoking FROM tables WHERE table_id =?");
+                $stmt->execute([$tableId]);
+                $result = $stmt->fetch();
+
+                $location = $result['location'];
+                $smoking = ($result['smoking']) ? 'Allowed' : 'Not allowed';
+
 
                 $currentDateTime = new DateTime();
                 $reservationDateTime = new DateTime($reservationDate . ' ' . getReservationTime($reservationTime));
@@ -268,10 +310,9 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                     $name = $fname . ' ' . $lname;
 
                     echo '<div class="col-sm-4 border border-dark">
-                            <form id="cancelReservation_'.$reservationId.'" method="post" onsubmit="return false;">
-                            <input type="hidden" name="reservationId" value="'.$reservationId.'">
+                           <form id="cancelReservation_'.$reservationId.'" method="post" onsubmit="return false;">
                                 <div class="row text-center">
-                                    <div class="row ">
+                                    <div class="row">
                                         <div class="row mb-1">
                                             <div class="col-md-4 text-sm-start">
                                                 <label class="font-weight-bold">Date:</label>
@@ -282,16 +323,39 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                                         </div>
                                         <div class="row mb-1">
                                             <div class="col-md-4 text-sm-start">
-                                                <label class="font-weight-bold">Time:</label>
+                                                <label class="font-weight-bold">Start:</label>
                                             </div>
                                             <div class="col-md-8 text-md-start">
                                                 <h4>' . $reservationTime . '</h4>
                                             </div>
                                         </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md-4 text-sm-start">
+                                                <label class="font-weight-bold">End:</label>
+                                            </div>
+                                            <div class="col-md-8 text-md-start">
+                                                <h4>' . $reservationEnd . '</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md-4 text-sm-start">
+                                                <label class="font-weight-bold">Location:</label>
+                                            </div>
+                                            <div class="col-md-8 text-md-start">
+                                                <h4>' . $location . '</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md-4 text-sm-start">
+                                                <label class="font-weight-bold">Smoking:</label>
+                                            </div>
+                                            <div class="col-md-8 text-md-start">
+                                                <h4>' . $smoking . '</h4>
+                                            </div>
+                                        </div>
                                         <div class="row my-2 d-flex justify-content-center">
                                             <div class="col-md-8">
-                                               <input type="submit" class="btnMain" value="Cancel" onclick="cancelReservation('.$reservationId.', \''.$reservationDate.'\', \''.$reservationTime.'\')">
-
+                                               <input type="submit" class="btnMain" value="Cancel" onclick="cancelReservation('.$reservationId.')">
                                             </div>
                                         </div>
                                     </div>

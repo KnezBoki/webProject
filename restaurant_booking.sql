@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 14, 2023 at 04:21 PM
+-- Generation Time: Aug 24, 2023 at 01:41 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -45,8 +45,14 @@ CREATE TABLE `accounts` (
 
 INSERT INTO `accounts` (`id`, `first_name`, `last_name`, `email`, `gender`, `date_of_birth`, `phone`, `password`, `created_at`) VALUES
 (0, 'Bojan', 'Knežević', 'knezboki.19@gmail.com', 'Male', '2000-10-19', '0638795332', '$2y$10$fN1Wu2XWq/Pa39Ox/00tNuvG3EwDZf8bBccXD1QvG1b97ieEA5uu6', '2023-08-04 13:42:00'),
-(14, 'Bojan', 'Knežević', 'bkmontages2000@gmail.com', 'Male', '2022-10-25', '0638795332', '$2y$10$1GSavM/YC0FxZxsEgVCgju095yX0GIRAO.U/0h21fnB96XX2gJ3SC', '2023-08-12 19:39:40'),
-(15, 'Bojan', 'Knežević', 'bksmurf19@gmail.com', 'Male', '2022-09-15', '0', '$2y$10$iIWRGVcHvsrYNGszHi1AyeqfU.24ZDCyQFkOX/cHb3rXjaHQkfBvm', '2023-08-12 19:46:42');
+(14, 'Bojan', 'Knežević', 'bkmontages2000@gmail.com', 'Male', '2000-10-20', '0638795332', '$2y$10$1GSavM/YC0FxZxsEgVCgju095yX0GIRAO.U/0h21fnB96XX2gJ3SC', '2023-08-12 19:39:40'),
+(15, 'Bojan', 'Knežević', 'bksmurf19@gmail.com', 'Male', '2000-10-20', '069', '$2y$10$iIWRGVcHvsrYNGszHi1AyeqfU.24ZDCyQFkOX/cHb3rXjaHQkfBvm', '2023-08-12 19:46:42'),
+(23, 'Bojan', 'Knežević', 'professorbobo19@gmail.com', 'Male', '2004-06-09', '0638795332', '$2y$10$s0yHyB7Iqo.pSEWwqPHNvukkWaWfKmjRgsYwbrF7/JB0J31C0/Bie', '2023-08-22 15:37:01'),
+(25, 'Bojan', 'Knežević', 'professorbobofb@gmail.com', 'Male', '2004-06-09', '0638795332', '$2y$10$s0yHyB7Iqo.pSEWwqPHNvukkWaWfKmjRgsYwbrF7/JB0J31C0/Bie', '2023-08-22 15:37:01'),
+(27, 'Bojan', 'Knežević', 'bobo2@gmail.com', 'Male', '2023-08-16', '0', '$2y$10$Xnuwm2MhLw6Dc7kNHn099ewh6frPlliE3FtNf12U6F9Bw1GAZzwre', '2023-08-23 08:30:47'),
+(45, 'Maza', 'K', 'maza@gmail.rs', 'Female', '2022-12-31', '1', '$2y$10$pJrzESpA976FSfnLqySddexpWWBerVDbxsygh4n3A83gwdmYOrS6O', '2023-08-23 10:11:43'),
+(46, 'Bojan', 'Knežević', 'maza2@gmail.rs', 'Female', '2021-11-30', '1', '$2y$10$YI3DtBjo0QZRGxPD78B7NumDkIVTNLT8biwh8RqoMKQQK2epkwIp6', '2023-08-23 11:38:43'),
+(47, 'Bojan', 'Knežević', 'maza3@dog.mail', 'Female', '2002-06-12', '0', '$2y$10$3N3RcNSYi1o/qs0pwxb1A.s.ek8ofrHU/Q3uuProPpR/0C/VhWwm6', '2023-08-24 07:19:41');
 
 --
 -- Triggers `accounts`
@@ -101,24 +107,36 @@ CREATE TABLE `menu_item` (
 
 CREATE TABLE `reservations` (
   `reservation_id` int(11) NOT NULL,
-  `account_id` int(11) DEFAULT NULL,
+  `account_id` int(11) NOT NULL,
   `table_id` int(11) DEFAULT NULL,
-  `status` enum('arriving','seated','ordered','served') NOT NULL,
-  `reservation_date` date DEFAULT NULL,
-  `reservation_time` enum('Breakfast','Lunch','Dinner') NOT NULL
+  `status` enum('arriving','seated','ordered','served','paid','cancelled') NOT NULL,
+  `reservation_date` date NOT NULL,
+  `reservation_time` time NOT NULL,
+  `reservation_end` time DEFAULT NULL,
+  `reservation_code` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `restaurant_personnel`
+-- Dumping data for table `reservations`
 --
 
-CREATE TABLE `restaurant_personnel` (
-  `id` int(11) NOT NULL,
-  `tbl_id` int(11) DEFAULT NULL,
-  `table_no` varchar(30) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+INSERT INTO `reservations` (`reservation_id`, `account_id`, `table_id`, `status`, `reservation_date`, `reservation_time`, `reservation_end`, `reservation_code`) VALUES
+(14, 15, 1, 'cancelled', '2023-08-25', '00:00:00', NULL, NULL),
+(19, 15, 18, 'cancelled', '2023-08-24', '00:00:00', NULL, NULL),
+(20, 15, 19, 'paid', '2023-08-24', '00:00:00', NULL, NULL),
+(25, 15, 20, 'cancelled', '2023-08-24', '00:00:00', NULL, NULL),
+(26, 15, 18, 'seated', '2023-08-24', '00:00:00', NULL, NULL),
+(27, 15, 19, 'cancelled', '2023-08-24', '00:00:00', NULL, NULL),
+(28, 15, 6, 'arriving', '2023-08-24', '00:00:00', NULL, NULL),
+(29, 15, 7, 'arriving', '2023-08-24', '00:00:00', NULL, NULL),
+(30, 15, 3, 'arriving', '2023-08-21', '00:00:00', NULL, NULL),
+(31, 14, 1, 'arriving', '2023-08-22', '00:00:00', NULL, NULL),
+(32, 15, 4, 'cancelled', '2023-08-25', '00:00:11', NULL, 'm5k0Z4dtEqNAumrj36Jp'),
+(33, 15, 5, 'cancelled', '2023-08-25', '00:00:11', NULL, 'tauZQx9enMusNLD99qcw'),
+(34, 15, 1, 'cancelled', '2023-08-30', '00:00:12', NULL, '83XEh7AVBCEoleEzphqV'),
+(35, 15, 1, 'cancelled', '2023-08-30', '14:00:00', '20:00:00', 'BBfE6n5z0gMHr9l5KZWf'),
+(36, 15, 6, 'arriving', '2023-08-31', '15:00:00', '18:00:00', 'CkrhT4EV4XZnvJDiYZtV'),
+(54, 47, 8, 'arriving', '2023-08-29', '14:00:00', '17:00:00', 'RqmbRwlUyxvvg5EojhnF');
 
 -- --------------------------------------------------------
 
@@ -149,34 +167,35 @@ INSERT INTO `role` (`role_id`, `title`) VALUES
 CREATE TABLE `tables` (
   `table_id` int(11) NOT NULL,
   `num_seats` int(11) NOT NULL,
-  `STATUS` enum('free','reserved') DEFAULT NULL
+  `location` enum('Indoor','Outdoor','Balcony') NOT NULL DEFAULT 'Indoor',
+  `smoking` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tables`
 --
 
-INSERT INTO `tables` (`table_id`, `num_seats`, `STATUS`) VALUES
-(1, 2, 'free'),
-(2, 2, 'free'),
-(3, 2, 'free'),
-(4, 2, 'free'),
-(5, 2, 'free'),
-(6, 4, 'free'),
-(7, 4, 'free'),
-(8, 4, 'free'),
-(9, 4, 'free'),
-(10, 4, 'free'),
-(11, 4, 'free'),
-(12, 4, 'free'),
-(13, 4, 'free'),
-(14, 4, 'free'),
-(15, 4, 'free'),
-(16, 4, 'free'),
-(17, 4, 'free'),
-(18, 8, 'free'),
-(19, 8, 'free'),
-(20, 8, 'free');
+INSERT INTO `tables` (`table_id`, `num_seats`, `location`, `smoking`) VALUES
+(1, 2, 'Indoor', 0),
+(2, 0, 'Outdoor', 0),
+(3, 0, 'Outdoor', 0),
+(4, 2, 'Balcony', 1),
+(5, 2, 'Balcony', 0),
+(6, 4, 'Outdoor', 0),
+(7, 4, 'Outdoor', 0),
+(8, 4, 'Indoor', 0),
+(9, 4, 'Balcony', 0),
+(10, 4, 'Indoor', 0),
+(11, 4, 'Indoor', 0),
+(12, 4, 'Indoor', 0),
+(13, 4, 'Indoor', 0),
+(14, 4, 'Indoor', 0),
+(15, 4, 'Indoor', 0),
+(16, 4, 'Indoor', 0),
+(17, 4, 'Indoor', 0),
+(18, 8, 'Indoor', 0),
+(19, 8, 'Indoor', 0),
+(20, 8, 'Indoor', 0);
 
 -- --------------------------------------------------------
 
@@ -195,8 +214,14 @@ CREATE TABLE `user_role` (
 
 INSERT INTO `user_role` (`account_id`, `role_id`) VALUES
 (0, 1),
-(14, 3),
-(15, 3);
+(14, 2),
+(15, 3),
+(23, 3),
+(25, 3),
+(27, 2),
+(45, 3),
+(46, 3),
+(47, 3);
 
 --
 -- Indexes for dumped tables
@@ -229,13 +254,6 @@ ALTER TABLE `reservations`
   ADD KEY `table_id` (`table_id`);
 
 --
--- Indexes for table `restaurant_personnel`
---
-ALTER TABLE `restaurant_personnel`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_R_pers` (`tbl_id`);
-
---
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
@@ -262,7 +280,7 @@ ALTER TABLE `user_role`
 -- AUTO_INCREMENT for table `accounts`
 --
 ALTER TABLE `accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `locations`
@@ -280,13 +298,7 @@ ALTER TABLE `menu_item`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `restaurant_personnel`
---
-ALTER TABLE `restaurant_personnel`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `reservation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -309,12 +321,6 @@ ALTER TABLE `tables`
 --
 ALTER TABLE `reservations`
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`table_id`) REFERENCES `tables` (`table_id`);
-
---
--- Constraints for table `restaurant_personnel`
---
-ALTER TABLE `restaurant_personnel`
-  ADD CONSTRAINT `FK_R_pers` FOREIGN KEY (`tbl_id`) REFERENCES `restaurant_tables` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user_role`

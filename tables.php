@@ -7,6 +7,10 @@ if (!$_SESSION['logged_in']) {
     header("location: login.php");
     exit();
 }
+elseif ($_SESSION['userRole'] != 'worker'){
+    header("location: index.php");
+    exit();
+}
 else {
     $email = $_SESSION['email'];
 
@@ -24,7 +28,6 @@ else {
 
     $dob = reverseFormatDate($rawDate);
 
-
     $sql = "SELECT COUNT(*) as row_count FROM tables";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
@@ -33,8 +36,6 @@ else {
 
     $maxT = $result['row_count']; //NUMBER OF TABLES IN RESTAURANT FROM DB
 }
-
-
 ?>
 <section class="my-5 pt-md-4 pt-5 pb-5">
     <div class="container-fluid py-5">
@@ -45,13 +46,13 @@ else {
                 <div>
                     <ul class="nav d-flex flex-column flex-md-custom">
                         <li class="nav-item mb-2 mb-md-0">
-                            <a class="nav-link" id="btnWorker">Worker Profile</a>
+                            <a class="nav-link" id="btnWorker" data-target="worker">Worker Profile</a>
                         </li>
                         <li class="nav-item mb-2 mb-md-0">
-                            <a class="nav-link" id="btnTables">Tables</a>
+                            <a class="nav-link" id="btnTables" data-target="tables">Tables</a>
                         </li>
                         <li class="nav-item mb-2 mb-md-0">
-                            <a class="nav-link" id="btnRes">Reservations</a>
+                            <a class="nav-link" id="btnRes" data-target="res">Reservations</a>
                         </li>
                     </ul>
 
@@ -60,7 +61,8 @@ else {
 
             <!-- Main Content -->
             <main class="col-md-10 col-12 bg-light">
-                <div class="container p-2" id="worker">
+                <div class="container p-2 section" id="worker">
+                    <!-- *** Worker info ***-->
                     <div class="row ">
                         <div class="col-lg-12 text-center mb-4">
                             <h2>Worker Profile</h2>
@@ -116,34 +118,62 @@ else {
                         </div>
                     </div>
                 </div>
-                <div class="container p-2 d-none" id="tables">
+                <div class="container p-2 d-none section" id="tables">
                     <!-- *** List of tables and details about the tables *** -->
                     <div class="row d-flex justify-content-center">
                         <!-- *** Tables *** -->
                         <?php
                         for ($i = 1; $i <= $maxT; $i++) {
-                            $stmt = $conn->prepare("SELECT num_seats FROM tables WHERE table_id = ?");
+                            $stmt = $conn->prepare("SELECT num_seats, location, smoking FROM tables WHERE table_id = ?");
                             $stmt->execute([$i]);
-                            $res = $stmt->fetch();
+                            $result = $stmt->fetch();
 
                             $t = $i;
-                            $seats = $res['num_seats'];
+                            $seats = $result['num_seats'];
+                            $location = $result['location'];
+                            $smoking = $result['smoking'];
 
                             echo '<div class="col-sm-4 border border-dark ">
                                     <div class="row text-center">
                                         <div class="row">
-                                            <div class="col-md-3 text-sm-start">
-                                                <label class="font-weight-bold">Table:</label>
+                                            <div class="row">
+                                                <div class="col-md-3 text-center">
+                                                    <label class="font-weight-bold">Table:</label>
+                                                </div>
                                             </div>
-                                            <div class="col-md-3 text-md-start">
-                                                <h4>' . $t . '</h4>
+                                                <div class="row mb-1">
+                                                    <div class="col-md-3 text-md-start">
+                                                    <h4>' . $t . '</h4>
+                                                </div>
                                             </div>
                                             <div class="row mb-1">
-                                                <div class="col-md-3 text-sm-start">
+                                                <div class="col-md-3 text-center">
                                                     <label class="font-weight-bold">Seats:</label>
                                                 </div>
+                                            </div>
+                                            <div class="row mb-1">
                                                 <div class="col-md-3 text-md-start">
                                                     <h4>' . $seats . '</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-md-3 pr-sm-2 text-center">
+                                                    <label class="font-weight-bold">Location:</label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-md-3 text-md-start">
+                                                    <h4>' . $location . '</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-md-3 text-center">
+                                                    <label class="font-weight-bold">Smoking:</label>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-md-3 text-md-start">
+                                                    <h4>' . $smoking . '</h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -153,12 +183,12 @@ else {
                         ?>
                     </div>
                 </div>
-                <div class="container p-2 d-none" id="res">
+                <div class="container p-2 d-none section" id="res">
                     <!-- *** List of reservation (on click show details?) *** -->
                     <div class="row d-flex justify-content-center">
-                        <!-- *** Tables *** -->
+                        <!-- *** Reservations *** -->
                         <?php
-                        $stmt = $conn->prepare("SELECT reservation_id, account_id, table_id, status, reservation_date, reservation_time FROM reservations");
+                        $stmt = $conn->prepare("SELECT * FROM reservations");
                         $stmt->execute();
 
                         $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -170,6 +200,8 @@ else {
                             $status = $reservation['status'];
                             $reservationDate = $reservation['reservation_date'];
                             $reservationTime = $reservation['reservation_time'];
+                            $reservationEnd = $reservation['reservation_end'];
+                            $reservationCode = $reservation['reservation_code'];
 
                             if($status != 'paid' && $status != 'cancelled') {
                                 $stmt = $conn->prepare("SELECT first_name, last_name FROM accounts WHERE id =?");
@@ -181,56 +213,80 @@ else {
 
                                 $name = $fname . ' ' . $lname;
 
-                                echo '<div class="col-sm-4 border border-dark ">
-                                    <form id="updateReservation_'.$reservationId.'" method="post" onsubmit="return false;">
-                                    <input type="hidden" name="reservationId" value="'.$reservationId.'">
-                                        <div class="row text-center">
-                                            <div class="row">
-                                                <div class="col-md-4 text-sm-start">
-                                                    <label class="font-weight-bold">Table:</label>
-                                                </div>
-                                                <div class="col-md-8 text-md-start">
-                                                    <h4>' . $tableId . '</h4>
-                                                </div>
-                                                <div class="row mb-1">
-                                                    <div class="col-md-4 text-sm-start">
-                                                        <label class="font-weight-bold">Made by:</label>
-                                                    </div>
-                                                    <div class="col-md-8 text-md-start">
-                                                        <h4>' . $name . '</h4>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-1">
-                                                    <div class="col-md-4 text-sm-start">
-                                                        <label class="font-weight-bold">Date:</label>
-                                                    </div>
-                                                    <div class="col-md-8 text-md-start">
-                                                        <h4>' . $reservationDate . '</h4>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-1">
-                                                    <div class="col-md-4 text-sm-start">
-                                                        <label class="font-weight-bold">Time:</label>
-                                                    </div>
-                                                    <div class="col-md-8 text-md-start">
-                                                        <h4>' . $reservationTime . '</h4>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-md-4 text-sm-start">
-                                                        <label class="font-weight-bold">Status:</label>
-                                                    </div>
-                                                    <div class="col-md-8 text-md-start">
-                                                        <h4><select name="newStatus" onchange="updateReservationStatus('.$reservationId.', this.value)"> 
-                                                        <option name="current" id="current">' . $status . '</option>
+                                echo '<div class="col-sm-4 d-sm-flex justify-content-center border border-dark ">
+                                    <form id="updateReservation_' . $reservationId . '" method="post" onsubmit="return false;">
+                                        <input type="hidden" name="reservationId" value="' . $reservationId . '">
+                                        <div class="row mb-1">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">Table:</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md-8 text-center">
+                                                <h4>' . $tableId . '</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">Made by:</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md-8 text-center">
+                                                <h4>' . $name . '</h4>
+                                            </div>
+                                        </div>  
+                                        <div class="row mb-1">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">Date:</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md-8 text-center">
+                                                <h4>' . $reservationDate . '</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">Time:</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-md-8 text-center">
+                                                <h4>' . $reservationTime . '</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">End:</label>
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <h4>' . $reservationEnd . '</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">Status:</label>
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <h4>
+                                                    <select name="newStatus" onchange="updateReservationStatus(' . $reservationId . ', this.value)">
+                                                        <option name="current" id="current" disabled selected>' . $status . '</option>
                                                         <option name="arriving" value="arriving">Arriving</option>
                                                         <option name="seated" value="seated">Seated</option>
                                                         <option name="ordered" value="ordered">Ordered</option>
                                                         <option name="served" value="served">Served</option>
                                                         <option name="paid" value="paid">Paid</option>
-                                                        </select></h4>
-                                                    </div>
-                                                </div>
+                                                    </select>
+                                                </h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">Reservation Code:</label>
+                                            </div>
+                                            <div class="col-md-8 text-center" style="white-space: normal; word-wrap: break-word">
+                                                <h4>' . $reservationCode . '</h4>
                                             </div>
                                         </div>
                                     </form>

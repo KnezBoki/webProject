@@ -3,7 +3,13 @@ require "template/header.php";
 require "db_config.php";
 require "functions.php";
 
+require_once "db_config.php";
+require_once "PHPMailer-6.8.0/vendor/autoload.php";
+
+use PHPMailer\PHPMailer\PHPMailer;
+
 $errorMessage = '';
+$freeTable = '';
 
 if(!$_SESSION['logged_in']){
     header("location:login.php");
@@ -16,65 +22,101 @@ $email = $_SESSION['email'];
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
     $res_date = formatDate($_POST['datepicker']);
-    $guests = $_POST['number-guests'];
+    $guestNum = $_POST['number-guests'];
     $res_time = $_POST['time'];
+    $res_end = $_POST['time_end'];
+    $location = $_POST['location'];
+    $smoking = $_POST['smoking'];
 
-    if(!validDate($res_date)){
-        $errorMessage = "Please select a future date!";
-    }
-    else {
-        $stmt = $conn->prepare("SELECT id FROM accounts WHERE email=?");
-        $stmt->execute([$email]);
-        $result = $stmt->fetch();
+    $seatsNeeded = getSeats($guestNum);
 
-        $acc = $result['id'];
+    $reservationTimeTimestamp = strtotime($res_time);
+    $reservationEndTimestamp = strtotime($res_end);
 
-        $seatsNeeded = 0;
-
-        switch ($guests) {
-            case $guests < 3:
-                $seatsNeeded = 2;
-                break;
-            case 3 < $guests && $guests < 5:
-                $seatsNeeded = 4;
-                break;
-            case 5 < $guests:
-                $seatsNeeded = 8;
-                break;
-        }
-
-        $stmt = $conn->prepare("SELECT table_id FROM tables WHERE num_seats = ?");
-        $stmt->execute([$seatsNeeded]);
-        $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        //Goes through all tables based on amount of seats need and checks if they are booked
-        foreach ($tables as $table) {
-            $stmt = $conn->prepare("SELECT reservation_id FROM reservations WHERE reservation_date = :res_date AND reservation_time = :res_time AND table_id = :tab AND status != 'paid'");
-            $stmt->bindParam(':res_date', $res_date);
-            $stmt->bindParam(':res_time', $res_time);
-            $stmt->bindParam(':tab', $table);
-            $stmt->execute();
+    if($reservationTimeTimestamp > $reservationEndTimestamp){$errorMessage = 'Please select a valid reservation time!';}
+    elseif (($reservationTimeTimestamp + 6 * 3600) < $reservationEndTimestamp){$errorMessage = 'Longest possible reservation period is 6 hours!';}
+    else{
+        if (!validDate($res_date)) {
+            $errorMessage = "Please select a future date!";
+        } else {
+            $stmt = $conn->prepare("SELECT id FROM accounts WHERE email=?");
+            $stmt->execute([$email]);
             $result = $stmt->fetch();
 
-            if (!$result) {
-                $tab = $table; // Found an available table
-                break;
+            $id = $result['id'];
+
+            $stmt = $conn->prepare("SELECT table_id FROM tables WHERE num_seats = ? AND location = ? AND smoking =? ");
+            $stmt->execute([$seatsNeeded, $location, $smoking]);
+            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            foreach ($tables as $table) {
+                $stmt = $conn->prepare("SELECT reservation_id FROM reservations WHERE table_id = :table AND status NOT IN ('paid', 'cancelled') AND reservation_date = :res_date AND (UNIX_TIMESTAMP(reservation_time) <= :res_time AND UNIX_TIMESTAMP(reservation_end) >= :res_end) OR (UNIX_TIMESTAMP(reservation_time) <= :res_end AND UNIX_TIMESTAMP(reservation_end) >= :res_end)");
+                $stmt->bindParam(':res_date', $res_date);
+                $stmt->bindParam(':res_time', $reservationTimeTimestamp);
+                $stmt->bindParam(':res_end', $reservationEndTimestamp);
+                $stmt->bindParam(':table', $table);
+                $stmt->execute();
+                $overlaps = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (empty($overlaps)) {
+                    $freeTable = $table;
+                    break;
+                }
             }
-        }
 
-        if (empty($tab)) {
-            $errorMessage = 'All tables for that time and date have been booked.';
-        } else {
-            $stmt = $conn->prepare("INSERT INTO reservations (account_id, table_id, reservation_date, reservation_time) VALUES (:account_id, :table_id, :reservation_date, :reservation_time)");
-            $stmt->bindParam(':account_id', $acc);
-            $stmt->bindParam(':table_id', $tab);
-            $stmt->bindParam(':reservation_date', $res_date);
-            $stmt->bindParam(':reservation_time', $res_time);
-
-            if ($stmt->execute()) {
-                $errorMessage = "Reservation successfully inserted.";
+            if (empty($freeTable)) {
+                $errorMessage = 'All tables for that time and date have been booked.';
             } else {
-                $errorMessage = "Error inserting reservation: " . $stmt->errorInfo()[2];
+                $reservationCode = generateVerificationCode();
+
+                $status = 'arriving';
+
+                $stmt = $conn->prepare("INSERT INTO reservations (account_id, table_id, status, reservation_date, reservation_time, reservation_end, reservation_code) VALUES (:account_id, :table_id, :status,  :reservation_date, :reservation_time,:reservation_end, :reservation_code)");
+                $stmt->bindParam(':account_id', $id);
+                $stmt->bindParam(':table_id', $freeTable);
+                $stmt->bindParam(':reservation_date', $res_date);
+                $stmt->bindParam(':status', $status);
+                $stmt->bindParam(':reservation_time', $res_time);
+                $stmt->bindParam(':reservation_end', $res_end);
+                $stmt->bindParam(':reservation_code', $reservationCode);
+
+                if ($stmt->execute()) {
+                    $reservationCode = generateVerificationCode();
+
+                    $stmt = $conn->prepare("SELECT first_name, last_name, email FROM accounts WHERE id=?");
+                    $stmt->execute([$id]);
+                    $result = $stmt->fetch();
+                    $fname = $result['first_name'];
+                    $lname = $result['last_name'];
+                    $email = $result['email'];
+
+                    // PHPMailer settings
+                    $mail = new PHPMailer();
+                    $mail->isSMTP();
+                    $mail->Host = 'sandbox.smtp.mailtrap.io';
+                    $mail->SMTPAuth = true;
+                    $mail->Port = 2525;
+                    $mail->Username = '144ca3a32ec68b';
+                    $mail->Password = '19c9a32187fb89';
+
+                    // Sender and recipient settings
+                    $mail->setFrom('noreply@milfirefox.com', 'Man I Love Food');
+                    $mail->addAddress($email, $fname . ' ' . $lname);
+
+                    // Email subject and body with verification link
+                    $mail->Subject = 'Table reservation';
+
+                    $mail->Body = "Hi $fname $lname,\n\nyou have successfully reserved a table at Man I Love Food. Once you arrive at our restaurant you will need to confirm your reservation by showing this code:\n\n$reservationCode\n\nSincerely,\nMan I Love Food Website Team";
+
+                    if ($mail->send()) {
+                        $_SESSION['signup'] = true; // Set the signup flag
+                        $errorMessage = "Email with reservation code has been sent!";
+                    } else {
+                        echo 'Mailer Error: ' . $mail->ErrorInfo;
+                    }
+                } else {
+                    $errorMessage = "Error making reservation: " . $stmt->errorInfo()[2];
+                }
             }
         }
     }
@@ -94,7 +136,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     <div class="col-lg-5 mx-5">
                         <div id="filterDate2">
                             <div class="input-group ">
-                                <input name="datepicker" id="date" type="text" placeholder="dd/mm/yyyy" required="" autocomplete="off">
+                                <input name="datepicker" id="datepicker" type="text" placeholder="dd-mm-yyyy" required="" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -112,11 +154,47 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     </div>
                     <div class="col-md-5 mx-5">
                         <fieldset>
-                            <select name="time" class="time" id="time" required="">
-                                <option value="" selected disabled>Select reservation time</option>
-                                <option value="Breakfast">Breakfast (7h - 11h)</option>
-                                <option value="Lunch">Lunch (12h - 16h)</option>
-                                <option value="Dinner">Dinner (18h - 22h)</option>
+                            <select name="time" id="time" required="">
+                                <?php
+                                for($i = 7; $i < 24; $i++){
+                                    echo '<option value="' . $i . ':00:00">' . $i . ' : 00</option>';
+                                }
+                                ?>
+                            </select>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-5 mx-5">
+                        <fieldset>
+                            <select name="time_end" id="time_end" required="">
+                                <?php
+                                for($i = 7; $i < 24; $i++){
+                                    echo '<option value="' . $i . ':00:00">' . $i . ' : 00</option>';
+                                }
+                                ?>
+                            </select>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-5 mx-5">
+                        <fieldset>
+                            <select name="location" class="time" id="location" required="">
+                                <?php
+                                $stmt = $conn->prepare("SELECT DISTINCT location FROM tables");
+                                $stmt->execute();
+                                $locations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                                foreach ($locations as $location) {
+                                    echo '<option value="' . $location['location'] . '">' . $location['location'] . '</option>';
+                                }
+
+                                ?>
+                            </select>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-5 mx-5">
+                        <fieldset>
+                            <select name="smoking" class="smoking" id="smoking" required="">
+                                <option value="0">No smoking allowed</option>
+                                <option value="1">Smoking allowed</option>
                             </select>
                         </fieldset>
                     </div>

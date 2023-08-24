@@ -220,7 +220,11 @@ miscellaneous styles
     box-shadow: 0 0 30px green;
 }
 
-
+.btnAddWorker, .btnAddUser{
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+}
 /*
 ---------------------------------------------
 header & dashboard

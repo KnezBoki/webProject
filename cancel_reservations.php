@@ -1,5 +1,5 @@
 <?php
-require_once "db_config.php";
+require "db_config.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["reservationId"])) {
     $reservationId = $_POST["reservationId"];

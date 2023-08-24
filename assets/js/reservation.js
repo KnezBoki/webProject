@@ -8,7 +8,7 @@ function getReservationType(time) {
     }
     return 'Unknown';
 }
-function cancelReservation(reservationId, reservationDate, reservationTime) {
+function cancelReservation(reservationId) {
     let formData = new FormData();
     formData.append("reservationId", reservationId);
 

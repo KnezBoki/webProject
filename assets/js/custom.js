@@ -148,66 +148,15 @@
 			}
 		});
 	}
-//Worker dash show/hide
+	//Show and hide menus / scroll through the menus
 	$(document).ready(function () {
-		$('a.nav-link').click(function () {
-			let dashID = $(this).attr('id');
+		$('.nav-link').click(function () {
+			let targetSection = $(this).data('target');
 
-			switch (dashID) {
-				case "btnWorker":
-					$("#worker").removeClass('d-none');
-					$("#tables").addClass('d-none');
-					$("#res").addClass('d-none');
-					break;
-				case "btnTables":
-					$("#worker").addClass('d-none');
-					$("#tables").removeClass('d-none');
-					$("#res").addClass('d-none');
-					break;
-				case "btnRes":
-					$("#worker").addClass('d-none');
-					$("#tables").addClass('d-none');
-					$("#res").removeClass('d-none');
-					break;
-				default:
-					$("#worker").addClass('d-none');
-					$("#tables").addClass('d-none');
-					$("#res").addClass('d-none');
-					break;
-			}
+			$('.section').addClass('d-none');
+
+			$("#" + targetSection).removeClass('d-none');
 		});
 	});
-//Admin dash show/hide
-	$(document).ready(function () {
-		$('a.nav-link').click(function () {
-			let adminId = $(this).attr('id');
 
-			switch (adminId) {
-				case "btnProfile":
-					$("#profile").removeClass('d-none');
-					$("#workers").addClass('d-none');
-					$("#users").addClass('d-none');
-					$("#reservations").addClass('d-none');
-					break;
-				case "btnWorkers":
-					$("#profile").addClass('d-none');
-					$("#workers").addClass('d-none');
-					$("#users").removeClass('d-none');
-					$("#reservations").addClass('d-none');
-					break;
-				case "btnUsers":
-					$("#profile").addClass('d-none');
-					$("#workers").addClass('d-none');
-					$("#users").addClass('d-none');
-					$("#reservations").removeClass('d-none');
-					break;
-				case "btnReservations":
-					$("#profile").addClass('d-none');
-					$("#workers").addClass('d-none');
-					$("#users").addClass('d-none');
-					$("#reservations").addClass('d-none');
-					break;
-			}
-		});
-	});
 })(window.jQuery);

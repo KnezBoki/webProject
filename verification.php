@@ -6,11 +6,13 @@ if (!isset($_SESSION['signup']) || !$_SESSION['signup']) {
     header("Location: signup.php");
     exit();
 }
+
 if($_SESSION['verified']){
     header("Location: index.php");
     exit();
 }
 
+$_SESSION['verified'] = false;
 require 'db_config.php';
 
 $fname = $_SESSION['fname'];
@@ -25,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirmPassword = $_POST['confirm_password'];
 
     if ($password !== $confirmPassword) {
-        echo "Password and confirm password do not match!";
+        $errorMessage = "Password and confirm password do not match!";
     } else {
         try {
             $conn = connect();
@@ -54,8 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($_SESSION['phone']);
 
                 $_SESSION['verified'] = true;
+                $errorMessage = "Account successfully verified!";
             } else {
-                return false;
+                $_SESSION['verified'] = false;
             }
         } catch (PDOException $e) {
             $errorMessage = "Error: " . $e->getMessage();

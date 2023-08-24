@@ -1,5 +1,15 @@
 <?php
-//date formatting
+//Generate a random verification code
+function generateVerificationCode($length = 20): string
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $code = '';
+    for ($i = 0; $i < $length; $i++) {
+        $code .= $characters[rand(0, strlen($characters) - 1)];
+    }
+    return $code;
+}
+//Date formatting
 function formatDate($inputDate): false|string
 {
     $dateObj = DateTime::createFromFormat('d-m-Y', $inputDate);
@@ -11,7 +21,7 @@ function formatDate($inputDate): false|string
         return false;
     }
 }
-//same as last just reverse
+//Same as last just reverse
 function reverseFormatDate($inputDate): false|string
 {
     $dateObj = DateTime::createFromFormat('Y-m-d', $inputDate);
@@ -74,4 +84,42 @@ function getReservationTime($time): false|string
         'Dinner' => '18:00',
         default => false,
     };
+}
+function getSeats($guests): int
+{
+    if($guests < 3){$seatsNeeded = 2;}
+    elseif ($guests < 5){$seatsNeeded = 4;}
+    else($seatsNeeded = 8);
+
+    return $seatsNeeded;
+}
+//Retrieves user role from database
+function getUserRoleFromDB($email, $password): ?string
+{
+    $conn = connect();
+
+    $stmt = $conn->prepare("SELECT id, password FROM accounts WHERE email = ?");
+    $stmt->execute([$email]);
+    $result = $stmt->fetch();
+
+    if ($result && password_verify($password, $result['password'])) {
+        $stmt = $conn->prepare("SELECT role_id FROM user_role WHERE account_id = ?");
+        $stmt->execute([$result['id']]);
+        $role = $stmt->fetch();
+        $stmt = $conn->prepare("SELECT id FROM accounts WHERE email = ?");
+        $stmt->execute([$email]);
+        $id = $stmt->fetch();
+        $_SESSION['id'] = $id;
+
+        switch ($role['role_id']) {
+            case 1:
+                return "admin";
+            case 2:
+                return "worker";
+            default:
+                return "user";
+        }
+    } else {
+        return null;
+    }
 }
