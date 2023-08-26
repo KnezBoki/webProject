@@ -42,8 +42,10 @@ function cancelReservation(reservationId) {
             console.error("Error:", error);
         });
 }
-function updateReservationStatus(reservationId, newStatus) {
-    let workerComment = document.querySelector(".workerComment").value;
+function updateReservationStatus(reservationId, newStatus, selectElement) {
+    let parentForm = selectElement.closest(".col-sm-4");
+    let workerComment = parentForm.querySelector(".workerComment").value;
+
     let formData = new FormData();
     formData.append("reservationId", reservationId);
     formData.append("newStatus", newStatus);

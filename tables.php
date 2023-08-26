@@ -271,7 +271,7 @@ else {
                                             </div>
                                             <div class="col-md-8 text-center">
                                                 <h4>
-                                                    <select name="newStatus" onchange="updateReservationStatus(' . $reservationId . ', this.value)">
+                                                    <select name="newStatus" class="newStatus" onchange="updateReservationStatus(' . $reservationId . ', this.value, this)">
                                                         <option name="current" id="current" disabled selected>' . $status . '</option>
                                                         <option name="arriving" value="arriving">Arriving</option>
                                                         <option name="seated" value="seated">Seated</option>

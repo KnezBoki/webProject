@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 26, 2023 at 02:01 PM
+-- Generation Time: Aug 26, 2023 at 03:14 PM
 -- Server version: 8.0.34-0ubuntu0.20.04.1
 -- PHP Version: 8.2.9
 
@@ -82,20 +82,6 @@ INSERT INTO `email_requests` (`email`, `last_request`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `menu_item`
---
-
-CREATE TABLE `menu_item` (
-  `id` int NOT NULL,
-  `item_name` varchar(200) DEFAULT NULL,
-  `item_desc` varchar(500) DEFAULT NULL,
-  `food_type` varchar(100) NOT NULL,
-  `price` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `reservations`
 --
 
@@ -119,9 +105,8 @@ INSERT INTO `reservations` (`reservation_id`, `account_id`, `table_id`, `status`
 (31, 14, 1, 'paid', '2023-08-22', '00:00:00', NULL, NULL, 'undefined'),
 (55, 14, 18, 'paid', '2023-08-26', '13:00:00', '14:00:00', 'xIPsKW4MH8bkuYj3dsLo', 'TEST'),
 (56, 14, 18, 'paid', '2023-08-26', '08:00:00', '09:00:00', 'XSX2rekBXrKVZDeeWYuy', 'TEST'),
-(57, 14, 19, 'served', '2023-08-26', '09:00:00', '13:00:00', '26cVfWuuQ1ZrA9qA1vOo', 'TEST'),
-(58, 14, 20, 'served', '2023-08-26', '09:00:00', '14:00:00', 'y4hCDSKutdqm6V9Yo4qr', ''),
-(59, 63, 2, 'arriving', '6245-02-13', '09:00:00', '12:00:00', 'BAjdiZcitbmhsMYW1o6u', NULL);
+(57, 14, 19, 'ordered', '2023-08-26', '09:00:00', '13:00:00', '26cVfWuuQ1ZrA9qA1vOo', 'TEST'),
+(58, 14, 20, 'seated', '2023-08-26', '09:00:00', '14:00:00', 'y4hCDSKutdqm6V9Yo4qr', 'smol');
 
 -- --------------------------------------------------------
 
@@ -200,7 +185,6 @@ CREATE TABLE `user_role` (
 INSERT INTO `user_role` (`account_id`, `role_id`) VALUES
 (0, 1),
 (14, 2),
-(61, 2),
 (49, 3),
 (50, 3),
 (60, 3),
@@ -223,12 +207,6 @@ ALTER TABLE `accounts`
 --
 ALTER TABLE `email_requests`
   ADD PRIMARY KEY (`email`);
-
---
--- Indexes for table `menu_item`
---
-ALTER TABLE `menu_item`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `reservations`
@@ -265,12 +243,6 @@ ALTER TABLE `user_role`
 --
 ALTER TABLE `accounts`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
-
---
--- AUTO_INCREMENT for table `menu_item`
---
-ALTER TABLE `menu_item`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `reservations`
