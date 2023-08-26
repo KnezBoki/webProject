@@ -1,0 +1,20 @@
+RewriteEngine On
+
+# Rewrite rule for clean URLs
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteRule ^([^.]+)$ $1.php [NC,L]
+
+# Deny access to hidden files and directories
+RewriteCond %{SCRIPT_FILENAME} -d [OR]
+RewriteCond %{SCRIPT_FILENAME} -f
+RewriteRule "(^|/)\." - [F]
+
+# Set default index file
+DirectoryIndex index.php
+
+# Disable directory listing
+Options -Indexes
+
+# Force https
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://milfirefox.stud.vts.su.ac.rs/ [R=301,L]

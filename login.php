@@ -5,7 +5,7 @@ require "functions.php";
 require "db_config.php";
 
 if ($_SESSION['logged_in']) {
-    header("location:profile.php");
+    header("location:profile");
     exit();
 }
 else {
@@ -22,13 +22,13 @@ else {
             $_SESSION['userRole'] = $userRole;
             $_SESSION['logged_in'] = true;
             if ($userRole == 'admin') {
-                header("Location:admin.php");
+                header("Location:admin");
                 exit();
             } elseif ($userRole == 'worker') {
-                header("Location:tables.php");
+                header("Location:tables");
                 exit();
             } else {
-                header("Location:profile.php");
+                header("Location:profile");
                 $_SESSION['email'] = $email;
                 exit();
             }
@@ -58,7 +58,7 @@ else {
                 </div>
                 <div class="col-lg-12 mb-3 text-md-center">
                     <fieldset>
-                        <a href="signup.php"><h6>Don't have an account? Click here!</h6></a>
+                        <a href="forgot"><h6>Forgot your password? Click here!</h6></a>
                     </fieldset>
                 </div>
                 <div class="col-lg-6">

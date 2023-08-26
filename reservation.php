@@ -50,7 +50,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
             foreach ($tables as $table) {
-                $stmt = $conn->prepare("SELECT reservation_id FROM reservations WHERE table_id = :table AND status NOT IN ('paid', 'cancelled') AND reservation_date = :res_date AND (UNIX_TIMESTAMP(reservation_time) <= :res_time AND UNIX_TIMESTAMP(reservation_end) >= :res_end) OR (UNIX_TIMESTAMP(reservation_time) <= :res_end AND UNIX_TIMESTAMP(reservation_end) >= :res_end)");
+                $stmt = $conn->prepare("SELECT reservation_id FROM reservations WHERE table_id = :table AND status NOT IN ('paid', 'cancelled') AND reservation_date = :res_date AND ((UNIX_TIMESTAMP(reservation_time) <= :res_time AND UNIX_TIMESTAMP(reservation_end) >= :res_time) OR (UNIX_TIMESTAMP(reservation_time) <= :res_end AND UNIX_TIMESTAMP(reservation_end) >= :res_end))");
                 $stmt->bindParam(':res_date', $res_date);
                 $stmt->bindParam(':res_time', $reservationTimeTimestamp);
                 $stmt->bindParam(':res_end', $reservationEndTimestamp);
@@ -81,7 +81,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                 $stmt->bindParam(':reservation_code', $reservationCode);
 
                 if ($stmt->execute()) {
-                    $reservationCode = generateVerificationCode();
 
                     $stmt = $conn->prepare("SELECT first_name, last_name, email FROM accounts WHERE id=?");
                     $stmt->execute([$id]);
@@ -100,7 +99,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
                     $mail->Password = '19c9a32187fb89';
 
                     // Sender and recipient settings
-                    $mail->setFrom('noreply@milfirefox.com', 'Man I Love Food');
+                    $mail->setFrom('noreply@milfirefox.stud.su.ac.rs', 'Man I Love Food Restaurant');
                     $mail->addAddress($email, $fname . ' ' . $lname);
 
                     // Email subject and body with verification link

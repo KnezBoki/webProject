@@ -24,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $reservationTime = $reservation['reservation_time'];
             $reservationEnd = $reservation['reservation_end'];
             $reservationCode = $reservation['reservation_code'];
+            $comment = $reservation['worker_comment'];
 
             $stmt = $conn->prepare("SELECT first_name, last_name FROM accounts WHERE id =?");
             $stmt->execute([$accountId]);
@@ -34,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $name = $fname . ' ' . $lname;
 
-            echo '<li class="col-sm-4 d-sm-inline-block"><div class="d-flex justify-content-center border border-dark reservation_item" style="min-height: 500px;">
+            echo '<li class="col-sm-4 d-sm-inline-block"><div class="d-flex justify-content-center border border-dark reservation_item" style="min-height: 600px;">
         <form id="updateReservation_' . $reservationId . '" method="post" onsubmit="return false;" class="align-items-center">
             <input type="hidden" name="reservationId" value="' . $reservationId . '">
             <div class="row mb-1">
@@ -99,6 +100,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
                 <div class="col-md-8 text-center" style="white-space: normal; word-wrap: break-word">
                     <h4 class="reservationCode-filter">' . $reservationCode . '</h4>
+                </div>
+            </div>
+            <div class="row mb-1">
+                <div class="col-sm-6 text-center">
+                    <label class="font-weight-bold">Comment:</label>
+                </div>
+                <div class="col-md-8 text-center" style="white-space: normal; word-wrap: break-word">
+                    <h4 class="reservationCode-filter">' . $comment . '</h4>
                 </div>
             </div>
         </form>

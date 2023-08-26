@@ -3,21 +3,17 @@ require "template/header.php";
 require "db_config.php";
 require "functions.php";
 
-if (isset($_SESSION['logged_in'])) {
-    header("location: index.php");
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']) {
+    header("location: index");
     exit();
 }
 
+$conn = connect();
+
+$timeout = 60; //1 minute
+
 use PHPMailer\PHPMailer\PHPMailer;
-
-require_once "db_config.php";
 require_once "PHPMailer-6.8.0/vendor/autoload.php";
-
-//Function to generate a verification link
-function generateVerificationLink($email, $verificationCode): string
-{
-    return "https://localhost:63342/WebProject/verification.php?email=" . urlencode($email) . "&code=" . urlencode($verificationCode);
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //Filtered inputs
@@ -28,50 +24,66 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rawDate = $_POST['datepicker'];
     $phone = filter_input(INPUT_POST, 'phone', FILTER_UNSAFE_RAW);
 
-    $errorMessage = NULL;
+    $errorMessage = '';
 
     $date = formatDate($rawDate);
 
-    if(!validEmail($email)){$errorMessage = "There is already an account registered under that email!";}
-    elseif(!validDOB($date)){$errorMessage = "You must be at least 13 year old to make an accout!";}
+    // Check if the email is in timeout (wip)
+    $lastRequest = isset($_SESSION['last_request']) ? $_SESSION['last_request'] : 0;
+    if (time() - $lastRequest < $timeout) {
+        $errorMessage = "Please wait before making another request.";
+    }
     else {
-        $_SESSION['fname'] = $fname;
-        $_SESSION['lname'] = $lname;
-        $_SESSION['email'] = $email;
-        $_SESSION['gender'] = $gender;
-        $_SESSION['date'] = $date;
-        $_SESSION['phone'] = $phone;
+        $errorMessage ='';
 
-        $verificationCode = generateVerificationCode();
-
-        $_SESSION['verificationCode'] = $verificationCode;
-
-        //UPDATE EMAIL FOR SERVER! on reservation.php as well
-
-        // PHPMailer settings
-        $mail = new PHPMailer();
-        $mail->isSMTP();
-        $mail->Host = 'sandbox.smtp.mailtrap.io';
-        $mail->SMTPAuth = true;
-        $mail->Port = 2525;
-        $mail->Username = '144ca3a32ec68b';
-        $mail->Password = '19c9a32187fb89';
-
-        // Sender and recipient settings
-        $mail->setFrom('noreply@milfirefox.com', 'Man I Love Food');
-        $mail->addAddress($email, $fname . ' ' . $lname);
-
-        // Email subject and body with verification link
-        $mail->Subject = 'Account creation';
-        $verificationLink = generateVerificationLink($email, $verificationCode);
-        $mail->Body = "Hi $fname $lname,\n\nThank you for signing up! Please click on the following link to confirm your email and set your password:\n\n$verificationLink\n\nSincerely,\nMan I Love Food Website Team";
-
-        if ($mail->send()) {
-            $_SESSION['signup'] = true; // Set the signup flag
-            $errorMessage = "Confirmation email sent successfully!";
+        if (!validEmail($email)) {
+            $errorMessage = "There is already an account registered under that email!";
+        } elseif (!validDOB($date)) {
+            $errorMessage = "You must be at least 13 years old to make an account!";
         } else {
-            echo 'Mailer Error: ' . $mail->ErrorInfo;
+
+            $stmt = $conn->prepare("INSERT INTO email_requests (email, last_request) VALUES (?, NOW()) ON DUPLICATE KEY UPDATE last_request = NOW()");
+            $stmt->execute([$email]);
+
+            $_SESSION['fname'] = $fname;
+            $_SESSION['lname'] = $lname;
+            $_SESSION['email'] = $email;
+            $_SESSION['gender'] = $gender;
+            $_SESSION['date'] = $date;
+            $_SESSION['phone'] = $phone;
+
+            $verificationCode = generateVerificationCode();
+
+            $_SESSION['verificationCode'] = $verificationCode;
+
+            //UPDATE EMAIL FOR SERVER! on reservation.php as well
+
+            // PHPMailer settings
+            $mail = new PHPMailer();
+            $mail->isSMTP();
+            $mail->Host = 'sandbox.smtp.mailtrap.io';
+            $mail->SMTPAuth = true;
+            $mail->Port = 2525;
+            $mail->Username = '144ca3a32ec68b';
+            $mail->Password = '19c9a32187fb89';
+
+            // Sender and recipient settings
+            $mail->setFrom('noreply@milfirefox.com', 'Man I Love Food');
+            $mail->addAddress($email, $fname . ' ' . $lname);
+
+            // Email subject and body with verification link
+            $mail->Subject = 'Account creation';
+            $verificationLink = generateVerificationLink($email, $verificationCode);
+            $mail->Body = "Hi $fname $lname,\n\nThank you for signing up! Please click on the following link to confirm your email and set your password:\n\n$verificationLink\n\nSincerely,\nMan I Love Food Website Team";
+
+            if ($mail->send()) {
+                $_SESSION['signup'] = true; // Set the signup flag
+                $errorMessage = "Confirmation email sent successfully!";
+            } else {
+                echo 'Mailer Error: ' . $mail->ErrorInfo;
+            }
         }
+        $_SESSION['last_request'] = time();
     }
 }
     ?>

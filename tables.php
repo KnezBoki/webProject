@@ -202,11 +202,12 @@ else {
                             $reservationTime = $reservation['reservation_time'];
                             $reservationEnd = $reservation['reservation_end'];
                             $reservationCode = $reservation['reservation_code'];
+                            $comment = $reservation['worker_comment'];
 
                             if($status != 'paid' && $status != 'cancelled') {
                                 $stmt = $conn->prepare("SELECT first_name, last_name FROM accounts WHERE id =?");
                                 $stmt->execute([$accountId]);
-                                $result = $stmt->fetch();
+                                $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
                                 $fname = $result['first_name'];
                                 $lname = $result['last_name'];
@@ -214,7 +215,7 @@ else {
                                 $name = $fname . ' ' . $lname;
 
                                 echo '<div class="col-sm-4 d-sm-flex justify-content-center border border-dark ">
-                                    <form id="updateReservation_' . $reservationId . '" method="post" onsubmit="return false;">
+                                    <form id="updateReservation_' . $reservationId . '" method="post" onsubmit="return false;" style="min-height: 600px;">
                                         <input type="hidden" name="reservationId" value="' . $reservationId . '">
                                         <div class="row mb-1">
                                             <div class="col-sm-6 text-center">
@@ -287,6 +288,14 @@ else {
                                             </div>
                                             <div class="col-md-8 text-center" style="white-space: normal; word-wrap: break-word">
                                                 <h4>' . $reservationCode . '</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-6 text-center">
+                                                <label class="font-weight-bold">Comment:</label>
+                                            </div>
+                                            <div class="col-md-8 text-center" style="white-space: normal; word-wrap: break-word">
+                                                <textarea class="font-weight-bold workerComment" name="workerComment" placeholder="Insert comment">' . $comment . '</textarea>
                                             </div>
                                         </div>
                                     </form>

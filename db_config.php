@@ -1,9 +1,9 @@
 <?php
 function connect($flag = true) {
     $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbName = "restaurant_booking";
+    $username = "milfirefox";
+    $password = "AZnQvUcB1ukxq6y";
+    $dbName = "milfirefox";
 
     try {
         if ($flag) {

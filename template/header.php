@@ -3,7 +3,7 @@ session_start();
 
 $userRole = "";
 
-if ($_SESSION['logged_in']){
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true){
     $userRole = $_SESSION['userRole'];
 }
 ?>
@@ -64,34 +64,34 @@ if ($_SESSION['logged_in']){
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="index.php" class="logo">
+                    <a href="index" class="logo">
                         <img src="assets/images/logo.png">
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li class="scroll-to-section"><a href="index.php">Home</a></li>
-                        <li class="scroll-to-section"><a href="about.php">About</a></li>
-                        <li class="scroll-to-section"><a href="contact.php">Contact Us</a></li>
+                        <li class="scroll-to-section"><a href="index">Home</a></li>
+                        <li class="scroll-to-section"><a href="about">About</a></li>
+                        <li class="scroll-to-section"><a href="contact">Contact Us</a></li>
                         <?php
                         //Menu item based on role
                         if ($userRole == 'admin') {
-                            echo '<li class="scroll-to-section"><a href="admin.php">Admin panel</a></li>';
+                            echo '<li class="scroll-to-section"><a href="admin">Admin panel</a></li>';
                         } elseif ($userRole == 'worker') {
-                            echo '<li class="scroll-to-section"><a href="tables.php">Dashboard</a></li>';
+                            echo '<li class="scroll-to-section"><a href="tables">Dashboard</a></li>';
                         } elseif($userRole == 'user') {
-                            echo '<li class="scroll-to-section"><a href="profile.php">Profile</a></li>';
-                            echo '<li class="scroll-to-section"><a href="reservation.php">Reservation</a></li>';
+                            echo '<li class="scroll-to-section"><a href="profile">Profile</a></li>';
+                            echo '<li class="scroll-to-section"><a href="reservation">Reservation</a></li>';
                         }
                         else{
-                            echo '<li class="scroll-to-section"><a href="signup.php">Sign up</a></li>';
+                            echo '<li class="scroll-to-section"><a href="signup">Sign up</a></li>';
                         }
 
                         // login/logout
                         if ($userRole == 'admin' || $userRole == 'worker' || $userRole == 'user') {
-                            echo '<li class="scroll-to-section"><a href="logout.php">Log out</a></li>';
+                            echo '<li class="scroll-to-section"><a href="logout">Log out</a></li>';
                         } else {
-                            echo '<li class="scroll-to-section"><a href="login.php">Log in</a></li>';
+                            echo '<li class="scroll-to-section"><a href="login">Log in</a></li>';
                         }
                         ?>
                     </ul>

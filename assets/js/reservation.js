@@ -43,9 +43,11 @@ function cancelReservation(reservationId) {
         });
 }
 function updateReservationStatus(reservationId, newStatus) {
+    let workerComment = document.querySelector(".workerComment").value;
     let formData = new FormData();
     formData.append("reservationId", reservationId);
     formData.append("newStatus", newStatus);
+    formData.append("workerComment", workerComment);
 
     fetch("update_reservations.php", {
         method: "POST",

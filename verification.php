@@ -1,5 +1,6 @@
 <?php
 require "template/header.php";
+require 'db_config.php';
 
 $errorMessage = '';
 if (!isset($_SESSION['signup']) || !$_SESSION['signup']) {
@@ -7,13 +8,13 @@ if (!isset($_SESSION['signup']) || !$_SESSION['signup']) {
     exit();
 }
 
-if($_SESSION['verified']){
-    header("Location: index.php");
+if(isset($_SESSION['verified']) && $_SESSION['verified']){
+    header("Location: login.php");
     exit();
 }
 
 $_SESSION['verified'] = false;
-require 'db_config.php';
+
 
 $fname = $_SESSION['fname'];
 $lname = $_SESSION['lname'];
@@ -46,7 +47,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindParam(':password', $hashedPassword);
             $stmt->bindValue(':created_at', date('Y-m-d H:i:s'));
 
-            if ($stmt->execute()) {
+            $stmt->execute();
+
+            $statement = $conn->prepare("SELECT id FROM accounts WHERE email=?");
+            $statement->execute([$email]);
+
+            $resultAccountId = $statement->fetch(PDO::FETCH_ASSOC);
+
+            $id = $resultAccountId['id'];
+            $stmt = $conn->prepare("INSERT INTO user_role SET account_id=?, role_id=3");
+
+            if ($stmt->execute([$id])) {
                 unset($_SESSION['signup']);
                 unset($_SESSION['fname']);
                 unset($_SESSION['lname']);
