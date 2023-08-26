@@ -34,12 +34,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($stmt->execute([$first_name, $last_name, $email, $gender, $date_of_birth, $phone, $hashedPass])) {
         $added = true;
 
-        if (isset($workerId)) {
-            $id = $conn->lastInsertId();
+        $stmt = $conn->prepare("SELECT id FROM accounts WHERE email=?");
+        $stmt->execute([$email]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $id = $result['id'];
 
-            $stmt = $conn->prepare("UPDATE user_role SET role_id = 2 WHERE account_id=?");
-            $stmt->execute([$id]);
+        if (isset($workerId)) {
+            $stmt = $conn->prepare("INSERT INTO user_role SET account_id=?, role_id=2");
+
         }
+        else{
+            $stmt = $conn->prepare("INSERT INTO user_role SET account_id=?, role_id=3");
+
+        }
+        $stmt->execute([$id]);
 
         // Fetch the newly inserted user data
         $newUserId = $conn->lastInsertId();

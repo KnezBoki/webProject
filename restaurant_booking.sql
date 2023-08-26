@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 24, 2023 at 01:41 PM
+-- Generation Time: Aug 25, 2023 at 11:05 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -46,13 +46,7 @@ CREATE TABLE `accounts` (
 INSERT INTO `accounts` (`id`, `first_name`, `last_name`, `email`, `gender`, `date_of_birth`, `phone`, `password`, `created_at`) VALUES
 (0, 'Bojan', 'Knežević', 'knezboki.19@gmail.com', 'Male', '2000-10-19', '0638795332', '$2y$10$fN1Wu2XWq/Pa39Ox/00tNuvG3EwDZf8bBccXD1QvG1b97ieEA5uu6', '2023-08-04 13:42:00'),
 (14, 'Bojan', 'Knežević', 'bkmontages2000@gmail.com', 'Male', '2000-10-20', '0638795332', '$2y$10$1GSavM/YC0FxZxsEgVCgju095yX0GIRAO.U/0h21fnB96XX2gJ3SC', '2023-08-12 19:39:40'),
-(15, 'Bojan', 'Knežević', 'bksmurf19@gmail.com', 'Male', '2000-10-20', '069', '$2y$10$iIWRGVcHvsrYNGszHi1AyeqfU.24ZDCyQFkOX/cHb3rXjaHQkfBvm', '2023-08-12 19:46:42'),
-(23, 'Bojan', 'Knežević', 'professorbobo19@gmail.com', 'Male', '2004-06-09', '0638795332', '$2y$10$s0yHyB7Iqo.pSEWwqPHNvukkWaWfKmjRgsYwbrF7/JB0J31C0/Bie', '2023-08-22 15:37:01'),
-(25, 'Bojan', 'Knežević', 'professorbobofb@gmail.com', 'Male', '2004-06-09', '0638795332', '$2y$10$s0yHyB7Iqo.pSEWwqPHNvukkWaWfKmjRgsYwbrF7/JB0J31C0/Bie', '2023-08-22 15:37:01'),
-(27, 'Bojan', 'Knežević', 'bobo2@gmail.com', 'Male', '2023-08-16', '0', '$2y$10$Xnuwm2MhLw6Dc7kNHn099ewh6frPlliE3FtNf12U6F9Bw1GAZzwre', '2023-08-23 08:30:47'),
-(45, 'Maza', 'K', 'maza@gmail.rs', 'Female', '2022-12-31', '1', '$2y$10$pJrzESpA976FSfnLqySddexpWWBerVDbxsygh4n3A83gwdmYOrS6O', '2023-08-23 10:11:43'),
-(46, 'Bojan', 'Knežević', 'maza2@gmail.rs', 'Female', '2021-11-30', '1', '$2y$10$YI3DtBjo0QZRGxPD78B7NumDkIVTNLT8biwh8RqoMKQQK2epkwIp6', '2023-08-23 11:38:43'),
-(47, 'Bojan', 'Knežević', 'maza3@dog.mail', 'Female', '2002-06-12', '0', '$2y$10$3N3RcNSYi1o/qs0pwxb1A.s.ek8ofrHU/Q3uuProPpR/0C/VhWwm6', '2023-08-24 07:19:41');
+(49, 'Bojan', 'Knežević', 'bksmurf19@gmail.com', 'Male', '2000-10-19', '0638795332', '$2y$10$sPn4brh.UWjfnkWsaaFQEuPpLktVSU24gJV4b1hwOC586yLhQswI2', '2023-08-25 08:40:08');
 
 --
 -- Triggers `accounts`
@@ -65,6 +59,24 @@ CREATE TRIGGER `after_accounts_insert` AFTER INSERT ON `accounts` FOR EACH ROW B
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `email_requests`
+--
+
+CREATE TABLE `email_requests` (
+  `email` varchar(255) NOT NULL,
+  `last_request` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `email_requests`
+--
+
+INSERT INTO `email_requests` (`email`, `last_request`) VALUES
+('bksmurf19@gmail.com', '2023-08-25 10:34:05');
 
 -- --------------------------------------------------------
 
@@ -113,30 +125,16 @@ CREATE TABLE `reservations` (
   `reservation_date` date NOT NULL,
   `reservation_time` time NOT NULL,
   `reservation_end` time DEFAULT NULL,
-  `reservation_code` varchar(20) DEFAULT NULL
+  `reservation_code` varchar(20) DEFAULT NULL,
+  `worker_comment` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reservations`
 --
 
-INSERT INTO `reservations` (`reservation_id`, `account_id`, `table_id`, `status`, `reservation_date`, `reservation_time`, `reservation_end`, `reservation_code`) VALUES
-(14, 15, 1, 'cancelled', '2023-08-25', '00:00:00', NULL, NULL),
-(19, 15, 18, 'cancelled', '2023-08-24', '00:00:00', NULL, NULL),
-(20, 15, 19, 'paid', '2023-08-24', '00:00:00', NULL, NULL),
-(25, 15, 20, 'cancelled', '2023-08-24', '00:00:00', NULL, NULL),
-(26, 15, 18, 'seated', '2023-08-24', '00:00:00', NULL, NULL),
-(27, 15, 19, 'cancelled', '2023-08-24', '00:00:00', NULL, NULL),
-(28, 15, 6, 'arriving', '2023-08-24', '00:00:00', NULL, NULL),
-(29, 15, 7, 'arriving', '2023-08-24', '00:00:00', NULL, NULL),
-(30, 15, 3, 'arriving', '2023-08-21', '00:00:00', NULL, NULL),
-(31, 14, 1, 'arriving', '2023-08-22', '00:00:00', NULL, NULL),
-(32, 15, 4, 'cancelled', '2023-08-25', '00:00:11', NULL, 'm5k0Z4dtEqNAumrj36Jp'),
-(33, 15, 5, 'cancelled', '2023-08-25', '00:00:11', NULL, 'tauZQx9enMusNLD99qcw'),
-(34, 15, 1, 'cancelled', '2023-08-30', '00:00:12', NULL, '83XEh7AVBCEoleEzphqV'),
-(35, 15, 1, 'cancelled', '2023-08-30', '14:00:00', '20:00:00', 'BBfE6n5z0gMHr9l5KZWf'),
-(36, 15, 6, 'arriving', '2023-08-31', '15:00:00', '18:00:00', 'CkrhT4EV4XZnvJDiYZtV'),
-(54, 47, 8, 'arriving', '2023-08-29', '14:00:00', '17:00:00', 'RqmbRwlUyxvvg5EojhnF');
+INSERT INTO `reservations` (`reservation_id`, `account_id`, `table_id`, `status`, `reservation_date`, `reservation_time`, `reservation_end`, `reservation_code`, `worker_comment`) VALUES
+(31, 14, 1, 'paid', '2023-08-22', '00:00:00', NULL, NULL, 'undefined');
 
 -- --------------------------------------------------------
 
@@ -177,8 +175,8 @@ CREATE TABLE `tables` (
 
 INSERT INTO `tables` (`table_id`, `num_seats`, `location`, `smoking`) VALUES
 (1, 2, 'Indoor', 0),
-(2, 0, 'Outdoor', 0),
-(3, 0, 'Outdoor', 0),
+(2, 2, 'Outdoor', 0),
+(3, 2, 'Outdoor', 0),
 (4, 2, 'Balcony', 1),
 (5, 2, 'Balcony', 0),
 (6, 4, 'Outdoor', 0),
@@ -215,13 +213,7 @@ CREATE TABLE `user_role` (
 INSERT INTO `user_role` (`account_id`, `role_id`) VALUES
 (0, 1),
 (14, 2),
-(15, 3),
-(23, 3),
-(25, 3),
-(27, 2),
-(45, 3),
-(46, 3),
-(47, 3);
+(49, 3);
 
 --
 -- Indexes for dumped tables
@@ -233,6 +225,12 @@ INSERT INTO `user_role` (`account_id`, `role_id`) VALUES
 ALTER TABLE `accounts`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `email_requests`
+--
+ALTER TABLE `email_requests`
+  ADD PRIMARY KEY (`email`);
 
 --
 -- Indexes for table `locations`
@@ -280,7 +278,7 @@ ALTER TABLE `user_role`
 -- AUTO_INCREMENT for table `accounts`
 --
 ALTER TABLE `accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `locations`

@@ -115,10 +115,16 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
                     <h4><?php echo $phone; ?></h4>
                 </div>
             </div>
-
+            <!-- *** Reset password *** -->
             <div class="col-md-12 d-flex justify-content-center mt-4">
                 <div class="col-md-4">
-                    <button id="editProfileBtn" class="btnMain">Edit Profile</button>
+                    <a href="forgot.php"><button  id="resetPassword" class="btnMain">Reset password</button></a>
+                </div>
+            </div>
+            <!-- *** Edit profile *** -->
+            <div class="col-md-12 d-flex justify-content-center mt-4">
+                <div class="col-md-4">
+                    <button id="editProfileBtn" class="btnMain">Edit profile</button>
                 </div>
             </div>
 

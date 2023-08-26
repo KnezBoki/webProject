@@ -5,9 +5,9 @@
                 <div class="left-text-content">
                     <div class="section-heading">
                         <h6>Contact Us</h6>
-                        <h2>Here You Can Make A Reservation Or Just walkin to our cafe</h2>
+                        <h2>You can contact us through phone, email or just by walking into our restaurant</h2>
                     </div>
-                    <p>Donec pretium est orci, non vulputate arcu hendrerit a. Fusce a eleifend riqsie, namei sollicitudin urna diam, sed commodo purus porta ut.</p>
+                    <p>You can make a reservation at Man I Love Food in person, through the phone or by clicking the reservation button in the navigation bar!</p>
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="phone">

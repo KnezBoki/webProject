@@ -333,21 +333,21 @@ else {
                                                 <select name="location" class="location" disabled>';
                                                    if($location === 'Outdoor'){
                                                        echo '
-                                                          <option value="Outdoor" selected disabled>Outdoor</option>
+                                                          <option value="Outdoor" selected >Outdoor</option>
                                                           <option value="Balcony">Balcony</option>
                                                           <option value="Indoor">Indoor</option>
                                                         ';
                                                    }
                                                    elseif($location ===' Balcony'){
                                                        echo'
-                                                       <option value="Balcony" selected disabled>Balcony</option>
+                                                       <option value="Balcony" selected >Balcony</option>
                                                        <option value="Outdoor">Outdoor</option>
                                                           <option value="Indoor">Indoor</option>
                                                        ';
                                                    }
                                                    else{
                                                        echo '
-                                                        <option value="Indoor" selected disabled>Indoor</option>
+                                                        <option value="Indoor" selected >Indoor</option>
                                                         <option value="Outdoor">Outdoor</option>
                                                         <option value="Balcony">Balcony</option>
                                                        ';

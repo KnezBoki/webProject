@@ -13,7 +13,7 @@ function updatePasswordInputColor(isStrong) {
 function checkPasswordStrength(passwordInput) {
     let password = passwordInput.value;
 
-    fetch("stroke.php", {
+    fetch("password_strength.php", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
